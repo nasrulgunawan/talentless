@@ -56,7 +56,8 @@ def run
     return "Enjoy your weekend, that's an order!"
   end
 
-  browser = Ferrum::Browser.new(headless: Setting::HEADLESS, window_size: [3840, 2160])
+  # browser = Ferrum::Browser.new(headless: Setting::HEADLESS, window_size: [3840, 2160])
+  browser = Ferrum::Browser.new(headless: Setting::HEADLESS, window_size: [1680, 1050])
   context = browser.contexts.create
   page = context.create_page
 
@@ -156,7 +157,7 @@ def run
   when nil
     if (8..10).include?(current_time.hour)
       puts_or_hush "Clocking in..."
-      clock_in_button = page.css(".btn-primary").find { |b| b.inner_text == "Clock In" }
+      clock_in_button = page.css("button").find { |b| b.inner_text == "Clock In" }
       clock_in_button.click
       send_to_slack("Clocked in :smile:")
       return "Clocked in."
@@ -169,7 +170,7 @@ def run
     
     if current_time >= earliest_time_to_clock_out
       puts_or_hush "Clocking out..."
-      clock_out_button = page.css(".btn-primary").find { |b| b.inner_text == "Clock Out" }
+      clock_out_button = page.css("button").find { |b| b.inner_text == "Clock Out" }
       clock_out_button.click
       send_to_slack("Clocked out :smile:")
       return "Clocked out."
