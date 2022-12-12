@@ -24,8 +24,8 @@ To try out in your local environment, set the following environment variables an
 export TALENTLESS_HEADLESS="true"
 export TALENTLESS_EMAIL="<your talenta email>"
 export TALENTLESS_PASSWORD="<your talenta password>"
-export TALENTLESS_LATITUDE="-7.271487840230101"
-export TALENTLESS_LONGITUDE="112.741817856013"
+export TALENTLESS_LATITUDE="<your preferred latitude>"
+export TALENTLESS_LONGITUDE="<your preferred longitude>"
 export TALENTLESS_TIME_ZONE="+07:00"
 export TALENTLESS_SLACK_WEBHOOK="<your slack webhook url>"
 

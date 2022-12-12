@@ -58,11 +58,13 @@ def run
 
   sleep(rand(1..15) * 60)
 
-  browser = Ferrum::Browser.new(headless: Setting::HEADLESS, window_size: [3840, 2160])
+  # browser = Ferrum::Browser.new(headless: Setting::HEADLESS, window_size: [3840, 2160])
+  browser = Ferrum::Browser.new(headless: Setting::HEADLESS, window_size: [1680, 1050])
+
   context = browser.contexts.create
   page = context.create_page
 
-  puts "Spoofing geolocation #{Setting::LATITUDE}, #{Setting::LONGITUDE}"
+  puts_or_hush "Spoofing geolocation #{Setting::LATITUDE}, #{Setting::LONGITUDE}"
   page.command("Browser.grantPermissions", permissions: ["geolocation"], origin: base_url, browserContextId: context.id)
   page.command("Page.setGeolocationOverride", latitude: Setting::LATITUDE, longitude: Setting::LONGITUDE, accuracy: 100)
 
@@ -152,32 +154,21 @@ def run
     puts_or_hush ""
   end
 
-  last_time, last_action = log.last
+  _last_time, last_action = log.last
 
   case last_action
   when nil
-    if (8..10).include?(current_time.hour)
-      puts_or_hush "Clocking in..."
-      clock_in_button = page.css(".btn-primary").find { |b| b.inner_text == "Clock In" }
-      clock_in_button.click
-      send_to_slack("Clocked in :smile:")
-      return "Clocked in."
-    else
-      raise "Cannot clock in now #{current_time}"
-    end
+    puts_or_hush "Clocking in..."
+    clock_in_button = page.css("button").find { |b| b.inner_text == "Clock In" }
+    clock_in_button.click
+    send_to_slack("Clocked in :smile:")
+    return "Clocked in."
   when "Clock In"
-    earliest_time_to_clock_out =
-      Time.parse("#{last_time} #{Setting::TIME_ZONE}") + 60 * 60 * 9
-    
-    if current_time >= earliest_time_to_clock_out
-      puts_or_hush "Clocking out..."
-      clock_out_button = page.css(".btn-primary").find { |b| b.inner_text == "Clock Out" }
-      clock_out_button.click
-      send_to_slack("Clocked out :smile:")
-      return "Clocked out."
-#     else
-#       raise "Cannot clock out now #{current_time}"
-    end
+    puts_or_hush "Clocking out..."
+    clock_out_button = page.css("button").find { |b| b.inner_text == "Clock Out" }
+    clock_out_button.click
+    send_to_slack("Clocked out :smile:")
+    return "Clocked out."
   when "Clock Out"
     return "All good today."
   else
